@@ -16,16 +16,16 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "CalTrack - Calorie Tracker",
-        short_name: "CalTrack",
-        description: "Track your daily calories and macros",
+        name: "the System - LevelUp",
+        short_name: "the System",
+        description: "Level Up or Die",
         theme_color: "#141414",
         background_color: "#141414",
         display: "standalone",
         start_url: "/",
         icons: [
-          { src: "/pwa-192.png", sizes: "192x192", type: "image/png" },
-          { src: "/pwa-512.png", sizes: "512x512", type: "image/png" },
+          { src: "/appIcon.png", sizes: "192x192", type: "image/png" },
+          { src: "/appIcon.png", sizes: "512x512", type: "image/png" },
         ],
       },
       workbox: {
