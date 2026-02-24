@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core background - #121212 */
+    --background: 0 0% 7.1%;
+    --foreground: 0 0% 100%;
+
+    /* Cards - #232220 */
+    --card: 30 3% 13.5%;
+    --card-foreground: 0 0% 100%;
+
+    /* Popover */
+    --popover: 40 4% 13%;
+    --popover-foreground: 0 0% 100%;
+
+    /* Primary - Orange #FF5A16 */
+    --primary: 18 100% 54%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - #2F2F2F */
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted */
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 76%;
+
+    /* Accent - Lavender #DDC0FF */
+    --accent: 271 100% 87%;
+    --accent-foreground: 270 40% 15%;
+
+    /* Yellow accent #F5F378 */
+    --accent-yellow: 59 88% 72%;
+    --accent-yellow-foreground: 59 80% 10%;
+
+    /* Green accent #45C588 */
+    --accent-green: 150 48% 52%;
+    --accent-green-foreground: 150 60% 10%;
+
+    /* Orange accent #FF6F43 */
+    --accent-orange: 16 100% 63%;
+    --accent-orange-foreground: 16 90% 10%;
+
+    /* Success #04B155 */
+    --success: 148 96% 35%;
+    --success-foreground: 0 0% 100%;
+    /* Danger #C93838 */
+    --danger: 0 58% 50%;
+    --danger-foreground: 0 0% 100%;
+
+    --destructive: 0 55% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 18 100% 54%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 18 100% 54%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 16%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 18 100% 54%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+
+  /* Exact palette colors */
+  .card-lavender {
+    background: #DDC0FF;
+    color: #121212;
+  }
+
+  .card-yellow {
+    background: #F5F378;
+    color: #121212;
+  }
+
+  .card-green {
+    background: #45C588;
+    color: #121212;
+  }
+
+  .card-orange {
+    background: #FF6F43;
+    color: #121212;
+  }
+
+  .card-blue {
+    background: #4FC3F7;
+    color: #121212;
+  }
+
+  .card-primary {
+    background: #FF5A16;
+    color: #FFFFFF;
+  }
+
+  .nav-active {
+    background: #FF5A16;
+    color: #FFFFFF;
+  }
+
+  .surface-elevated {
+    background: hsl(0 0% 12%);
+  }
+
+  .text-muted-soft {
+    color: hsl(0 0% 60%);
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* Sheet slide-up animation */
+@keyframes slideUp {
+  from {
+    transform: translateX(-50%) translateY(100%);
+  }
+
+  to {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
