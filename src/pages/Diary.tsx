@@ -42,8 +42,8 @@ const Diary = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen pb-24 max-w-md mx-auto" style={{ background: "#121212", color: "#fff" }}>
-            <div className="sticky top-0 z-50 bg-[#121212] pt-12 pb-1">
+        <div className="flex flex-col min-h-screen pb-24 max-w-md mx-auto bg-background text-foreground">
+            <div className="sticky top-0 z-50 bg-background pt-12 pb-1">
                 {/* ── Header ── */}
                 <div className="px-5 pb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-extrabold">Food Diary</h1>
@@ -76,8 +76,8 @@ const Diary = () => {
                                         <span
                                             className="w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all"
                                             style={{
-                                                background: isToday ? "#121212" : isSel ? "#474747" : "transparent",
-                                                color: (isToday || isSel) ? "#fff" : "#9ca3af",
+                                                background: isToday ? "hsl(var(--primary))" : isSel ? "hsl(var(--muted))" : "transparent",
+                                                color: (isToday || isSel) ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
                                             }}
                                         >
                                             {format(d, "dd")}

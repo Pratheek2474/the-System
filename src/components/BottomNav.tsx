@@ -81,8 +81,8 @@ const BottomNav = () => {
           width: 52,
           height: 52,
           borderRadius: "50%",
-          background: isActive ? "#FF5A16" : "transparent",
-          color: isActive ? "#FFFFFF" : "rgba(255,255,255,0.45)",
+          background: isActive ? "hsl(var(--primary))" : "transparent",
+          color: isActive ? "hsl(var(--primary-foreground))" : "rgba(255,255,255,0.45)",
         }}
       >
         <tab.icon size={22} />
@@ -113,9 +113,9 @@ const BottomNav = () => {
               width: 56,
               height: 56,
               borderRadius: "50%",
-              background: "linear-gradient(135deg, #FF5A16 0%, #FF8C00 100%)",
-              boxShadow: "0 4px 20px rgba(255,90,22,0.5)",
-              color: "#fff",
+              background: "hsl(var(--primary))",
+              boxShadow: "0 4px 20px hsl(var(--primary) / 0.5)",
+              color: "hsl(var(--primary-foreground))",
             }}
           >
             <Plus size={26} strokeWidth={2.5} />

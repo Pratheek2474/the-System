@@ -64,9 +64,9 @@ const CalorieRing = ({
   goal,
   burned = 0,
   size = 218,
-  color = "#121212",
+  color = "hsl(var(--primary))",
   burnedColor = "rgba(255,255,255,0.92)",
-  bgColor = "#121212",
+  bgColor = "#212020",
   label,
   showLabel = true,
   compact = false,
@@ -124,14 +124,14 @@ const CalorieRing = ({
               </filter>
               <radialGradient id={glowGradId} cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(108.626 108.626) rotate(90) scale(60.5613)">
                 <stop stopColor="white" />
-                <stop offset="1" stopColor="#121212" />
+                <stop offset="1" stopColor="hsl(var(--primary))" />
               </radialGradient>
             </>
           )}
         </defs>
 
         {/* ── 2. Background track (full 180° ring, translucent) ── */}
-        <path d={RING_PATH} fill={bgColor} opacity={0.1} />
+        <path d={RING_PATH} fill={bgColor} />
 
         {/* ── 3. Consumed arc — dark, fills from LEFT ── */}
         {eatPct > 0.001 && (
@@ -157,13 +157,13 @@ const CalorieRing = ({
             style={{
               fontSize: size * 0.155,
               fontWeight: 800,
-              color,
+              color: "hsl(var(--foreground))",
               lineHeight: 1.1,
             }}
           >
             {left}
           </span>
-          <span style={{ fontSize: size * 0.075, color, opacity: 0.65 }}>
+          <span style={{ fontSize: size * 0.075, color: "hsl(var(--muted-foreground))", opacity: 0.8 }}>
             {label ?? "Left"}
           </span>
         </div>

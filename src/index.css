@@ -6,60 +6,30 @@
 
 @layer base {
   :root {
-    /* Core background - #121212 */
-    --background: 0 0% 7.1%;
-    --foreground: 0 0% 100%;
-
-    /* Cards - #232220 */
-    --card: 30 3% 13.5%;
-    --card-foreground: 0 0% 100%;
-
-    /* Popover */
-    --popover: 40 4% 13%;
-    --popover-foreground: 0 0% 100%;
-
-    /* Primary - Orange #FF5A16 */
-    --primary: 18 100% 54%;
-    --primary-foreground: 0 0% 100%;
-
-    /* Secondary - #2F2F2F */
-    --secondary: 0 0% 18%;
-    --secondary-foreground: 0 0% 100%;
-
-    /* Muted */
-    --muted: 0 0% 18%;
-    --muted-foreground: 0 0% 76%;
-
-    /* Accent - Lavender #DDC0FF */
-    --accent: 271 100% 87%;
-    --accent-foreground: 270 40% 15%;
-
-    /* Yellow accent #F5F378 */
-    --accent-yellow: 59 88% 72%;
-    --accent-yellow-foreground: 59 80% 10%;
-
-    /* Green accent #45C588 */
-    --accent-green: 150 48% 52%;
-    --accent-green-foreground: 150 60% 10%;
-
-    /* Orange accent #FF6F43 */
-    --accent-orange: 16 100% 63%;
-    --accent-orange-foreground: 16 90% 10%;
-
-    /* Success #04B155 */
-    --success: 148 96% 35%;
-    --success-foreground: 0 0% 100%;
-    /* Danger #C93838 */
-    --danger: 0 58% 50%;
-    --danger-foreground: 0 0% 100%;
-
-    --destructive: 0 55% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 18 100% 54%;
-
+    /* Exact user provided colors */
+    /* #0a0a0a */
+    --background: 0 0% 4%;
+    /* #fafbfb */
+    --foreground: 180 14% 98%;
+    /* #161716 */
+    --card: 120 2% 9%;
+    --card-foreground: 180 14% 98%;
+    --popover: 120 2% 9%;
+    --popover-foreground: 180 14% 98%;
+    /* #8f50ff */
+    --primary: 262 100% 66%;
+    --primary-foreground: 180 14% 98%;
+    --secondary: 120 2% 16%;
+    --secondary-foreground: 180 14% 98%;
+    --muted: 120 2% 16%;
+    --muted-foreground: 180 14% 65%;
+    --accent: 120 2% 16%;
+    --accent-foreground: 180 14% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 180 14% 98%;
+    --border: 120 2% 16%;
+    --input: 120 2% 16%;
+    --ring: 262 100% 66%;
     --radius: 1rem;
 
     --sidebar-background: 0 0% 10%;
@@ -89,8 +59,9 @@
 
   /* Exact palette colors */
   .card-lavender {
-    background: #DDC0FF;
-    color: #121212;
+    background: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    border: 1px solid hsl(var(--border));
   }
 
   .card-yellow {
