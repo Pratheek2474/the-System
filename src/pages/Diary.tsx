@@ -54,7 +54,6 @@ const Diary = () => {
                         </div>
                         <p className="text-base font-semibold">Welcome Back, Player.</p>
                     </div>
-                    <ClipboardList className="w-6 h-6 text-accent-orange" />
                 </div>
 
                 {/* ── Week Selector ── */}
