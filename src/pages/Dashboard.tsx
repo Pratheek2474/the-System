@@ -233,7 +233,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col min-h-screen pb-28 max-w-md mx-auto" style={{ background: "#121212", color: "#fff" }}>
 
-      <div className="sticky top-0 z-50 bg-[#121212] pt-6 pb-1">
+      <div className="fixed top-0 w-full max-w-md z-50 bg-[#121212] pt-6 pb-1">
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-5 pb-4">
           <div className="flex items-center gap-3">
@@ -291,6 +291,7 @@ const Dashboard = () => {
       </div>
 
       {/* ── Content ── */}
+      <div className="h-[170px]" />
       <div className="px-5 space-y-4">
         <h2 className="text-2xl font-bold">Dashboard</h2>
 

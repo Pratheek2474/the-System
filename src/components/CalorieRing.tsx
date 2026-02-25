@@ -65,7 +65,7 @@ const CalorieRing = ({
   burned = 0,
   size = 218,
   color = "hsl(var(--primary))",
-  burnedColor = "rgba(255,255,255,0.92)",
+  burnedColor = "#FF5A16",
   bgColor = "#212020",
   label,
   showLabel = true,
@@ -74,6 +74,7 @@ const CalorieRing = ({
   // Unique IDs so multiple rings on one page don't clash
   const uid = useId().replace(/:/g, "");
   const eatClipId = `eat-${uid}`;
+  const burnClipId = `burn-${uid}`;
   const glowGradId = `glow-grad-${uid}`;
   const glowFiltId = `glow-filt-${uid}`;
 
@@ -85,6 +86,8 @@ const CalorieRing = ({
 
   // Sector angles
   const eatEndDeg = 180 + eatPct * 180; // 180° → 360°
+  const burnedPct = Math.min(burned / totalBudget, 1);
+  const burnedStartDeg = Math.max(180, eatEndDeg - burnedPct * 180);
 
   // Allow negative remaining
   const left = goal + burned - consumed;
@@ -107,6 +110,11 @@ const CalorieRing = ({
           {/* ── Clip: consumed (left → clockwise) ── */}
           <clipPath id={eatClipId}>
             <path d={sectorCW(180, eatEndDeg)} />
+          </clipPath>
+
+          {/* ── Clip: burned (from consumed end backwards) ── */}
+          <clipPath id={burnClipId}>
+            <path d={sectorCW(burnedStartDeg, eatEndDeg)} />
           </clipPath>
 
           {/* ── Radial gradient + blur for inner glow ── */}
@@ -136,6 +144,11 @@ const CalorieRing = ({
         {/* ── 3. Consumed arc — dark, fills from LEFT ── */}
         {eatPct > 0.001 && (
           <path d={RING_PATH} fill={color} clipPath={`url(#${eatClipId})`} />
+        )}
+
+        {/* ── 4. Burned arc — orange, fills from right (end of consumed) backwards ── */}
+        {burned > 0 && (
+          <path d={RING_PATH} fill={burnedColor} clipPath={`url(#${burnClipId})`} />
         )}
       </svg>
 

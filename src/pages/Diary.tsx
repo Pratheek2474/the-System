@@ -43,7 +43,7 @@ const Diary = () => {
 
     return (
         <div className="flex flex-col min-h-screen pb-24 max-w-md mx-auto bg-background text-foreground">
-            <div className="sticky top-0 z-50 bg-background pt-12 pb-1">
+            <div className="fixed top-0 w-full max-w-md z-50 bg-background pt-12 pb-1">
                 {/* ── Header ── */}
                 <div className="px-5 pb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-extrabold">Food Diary</h1>
@@ -89,6 +89,9 @@ const Diary = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Spacer for fixed header */}
+            <div className="h-[190px]" />
 
             <div className="px-5 space-y-4">
                 {/* Daily Summary Card */}
