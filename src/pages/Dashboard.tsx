@@ -62,7 +62,7 @@ const MacroGauge = ({
         </clipPath>
       </defs>
       {/* track — card colour at low opacity */}
-      <path d={RING_PATH_D} fill={bgColor} opacity={0.3} />
+      <path d={RING_PATH_D} fill={bgColor} opacity={0.1} />
       {/* consumed — dark fill */}
       {pct > 0.001 && (
         <path d={RING_PATH_D} fill={color} clipPath={`url(#${id})`} />
@@ -91,8 +91,8 @@ const MacroCard = ({
   noData?: boolean;
   unit?: string;
 }) => {
-  const left = Math.max(goal - current, 0);
-  const minLabel = Math.round(goal * 0.56);
+  // Allow negative remaining
+  const left = goal - current;
 
   return (
     <div className={`${cardClass} rounded-3xl p-4 flex flex-col`} style={{ minHeight: 170 }}>
@@ -101,12 +101,20 @@ const MacroCard = ({
         <MacroGauge current={current} goal={goal} color={arcColor} bgColor={arcBg} size={130} />
       </div>
       <div className="flex items-end justify-between mt-auto px-1">
-        <span className="text-[11px] font-semibold opacity-60">{minLabel}{unit}</span>
-        <div className="flex flex-col items-center leading-none">
-          <span className="text-xl font-extrabold">{noData ? "—" : `${left}${unit}`}</span>
-          <span className="text-[10px] font-semibold opacity-60 mt-0.5">{noData ? "No data" : "Left"}</span>
+        <div className="flex flex-col">
+          <span className="text-[11px] font-semibold opacity-60">{current}{unit}</span>
+          <span className="text-[9px] font-semibold opacity-40">Taken</span>
         </div>
-        <span className="text-[11px] font-semibold opacity-60">{goal}{unit}</span>
+
+        <div className="flex flex-col items-center leading-none">
+          <span className="text-xl font-extrabold">{left}{unit}</span>
+          <span className="text-[10px] font-semibold opacity-60 mt-0.5">Left</span>
+        </div>
+
+        <div className="flex flex-col items-end">
+          <span className="text-[11px] font-semibold opacity-60">{goal}{unit}</span>
+          <span className="text-[9px] font-semibold opacity-40">Target</span>
+        </div>
       </div>
     </div>
   );
@@ -124,22 +132,22 @@ const WaterCard = ({
   const pct = Math.min((current / goal) * 100, 100);
 
   return (
-    <div className="card-blue rounded-3xl p-4 flex flex-col justify-between" style={{ minHeight: 170 }}>
+    <div className="bg-white rounded-3xl p-4 flex flex-col justify-between" style={{ minHeight: 170 }}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <Droplets className="w-5 h-5 text-[#121212]" />
           <p className="text-sm font-bold text-[#121212]">Water</p>
         </div>
-        <div className="flex items-center gap-1 bg-white/20 rounded-xl p-0.5">
+        <div className="flex items-center gap-1 bg-[#121212]/5 rounded-xl p-0.5">
           <button
             onClick={() => onUpdate(-100)}
-            className="w-7 h-7 flex items-center justify-center hover:bg-white/20 rounded-lg transition-colors"
+            className="w-7 h-7 flex items-center justify-center hover:bg-[#121212]/10 rounded-lg transition-colors"
           >
             <Minus size={14} color="#121212" strokeWidth={3} />
           </button>
           <button
             onClick={() => onUpdate(100)}
-            className="w-7 h-7 flex items-center justify-center hover:bg-white/20 rounded-lg transition-colors"
+            className="w-7 h-7 flex items-center justify-center hover:bg-[#121212]/10 rounded-lg transition-colors"
           >
             <Plus size={14} color="#121212" strokeWidth={3} />
           </button>
@@ -152,7 +160,7 @@ const WaterCard = ({
           <span className="text-xs font-bold text-[#121212]/60">/ {goal} ml</span>
         </div>
 
-        <div className="w-full h-3 bg-white/20 rounded-full overflow-hidden">
+        <div className="w-full h-3 bg-[#121212]/5 rounded-full overflow-hidden">
           <div
             className="h-full bg-[#121212] rounded-full transition-all duration-500"
             style={{ width: `${pct}%` }}
@@ -170,7 +178,7 @@ const WaterCard = ({
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 const Dashboard = () => {
-  const { meals, water, workouts, profile, setWater } = useApp();
+  const { meals, water, workouts, profile, setWater, steps } = useApp();
   const [selectedDate, setSelectedDate] = useState<string>(getToday());
   const today = getToday();
   const weekDates = getWeekDates();
@@ -207,6 +215,15 @@ const Dashboard = () => {
 
   const selectedWater = water.find((w) => w.date === selectedDate)?.ml ?? 0;
 
+  // Calculate total workout duration
+  const totalDuration = useMemo(
+    () => selectedWorkouts.reduce((s, w) => s + w.duration, 0),
+    [selectedWorkouts]
+  );
+
+  // Steps for selected date (defaults to 0 if not today/logged)
+  const selectedSteps = steps.find((s) => s.date === selectedDate)?.steps ?? 0;
+
 
   // Has any data been logged for the selected date?
   const hasData = selectedMeals.length > 0 || selectedWorkouts.length > 0 || selectedWater > 0;
@@ -216,57 +233,59 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col min-h-screen pb-28 max-w-md mx-auto" style={{ background: "#121212", color: "#fff" }}>
 
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between px-5 pt-6 pb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-lg" style={{ background: "#cc1111" }}>
-            P
+      <div className="sticky top-0 z-50 bg-[#121212] pt-6 pb-1">
+        {/* ── Header ── */}
+        <div className="flex items-center justify-between px-5 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-lg" style={{ background: "#cc1111" }}>
+              P
+            </div>
+            <p className="text-base font-semibold">Welcome Back, Player.</p>
           </div>
-          <p className="text-base font-semibold">Welcome Back, Player.</p>
+
         </div>
 
-      </div>
-
-      {/* ── Week Selector ── */}
-      <div className="px-5 mb-5">
-        <div className="rounded-3xl p-3" style={{ background: "#ffffff" }}>
-          <div className="grid grid-cols-7 gap-1 text-center">
-            {weekDates.map((d) => {
-              const dateStr = formatDate(d);
-              const isToday = dateStr === today;
-              const isSel = dateStr === selectedDate;
-              return (
-                <button
-                  key={dateStr}
-                  onClick={() => setSelectedDate(dateStr)}
-                  className="flex flex-col items-center gap-1"
-                >
-                  {/* day label — purple pill on today */}
-                  <span
-                    className="text-[11px] font-semibold w-9 py-0.5 rounded-full"
-                    style={{
-                      color: isToday ? "#7c3aed" : "#9ca3af",
-                      background: isToday ? "#ede9fe" : "transparent",
-                    }}
+        {/* ── Week Selector ── */}
+        <div className="px-5 mb-4">
+          <div className="rounded-3xl p-3" style={{ background: "#ffffff" }}>
+            <div className="grid grid-cols-7 gap-1 text-center">
+              {weekDates.map((d) => {
+                const dateStr = formatDate(d);
+                const isToday = dateStr === today;
+                const isSel = dateStr === selectedDate;
+                return (
+                  <button
+                    key={dateStr}
+                    onClick={() => setSelectedDate(dateStr)}
+                    className="flex flex-col items-center gap-1"
                   >
-                    {format(d, "EEE")}
-                  </span>
-                  {/* date number — black fill for today, white ring for other selected */}
-                  <span
-                    className="w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all"
-                    style={{
-                      background: isToday && isSel ? "#121212"
-                        : isToday ? "#121212"
-                          : isSel ? "#474747"
-                            : "transparent",
-                      color: (isToday || isSel) ? "#fff" : "#9ca3af",
-                    }}
-                  >
-                    {format(d, "dd")}
-                  </span>
-                </button>
-              );
-            })}
+                    {/* day label — purple pill on today */}
+                    <span
+                      className="text-[11px] font-semibold w-9 py-0.5 rounded-full"
+                      style={{
+                        color: isToday ? "#7c3aed" : "#9ca3af",
+                        background: isToday ? "#ede9fe" : "transparent",
+                      }}
+                    >
+                      {format(d, "EEE")}
+                    </span>
+                    {/* date number — black fill for today, white ring for other selected */}
+                    <span
+                      className="w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all"
+                      style={{
+                        background: isToday && isSel ? "#121212"
+                          : isToday ? "#121212"
+                            : isSel ? "#474747"
+                              : "transparent",
+                        color: (isToday || isSel) ? "#fff" : "#9ca3af",
+                      }}
+                    >
+                      {format(d, "dd")}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -275,25 +294,50 @@ const Dashboard = () => {
       <div className="px-5 space-y-4">
         <h2 className="text-2xl font-bold">Dashboard</h2>
 
-        {/* Calories — lavender #DDC0FF */}
-        <div className="card-lavender rounded-3xl p-5 flex flex-col items-center">
-          <h3 className="self-start text-base font-bold mb-2">Calories</h3>
-          <div className="flex justify-center w-full">
-            <CalorieRing
-              consumed={hasData ? totals.calories : 0}
-              goal={profile.dailyCalorieGoal}
-              burned={hasData ? caloriesBurned : 0}
-              size={230}
-              color="#121212"
-              burnedColor="rgba(255,255,255,0.92)"
-              bgColor="#121212"
-              showLabel
-              label={hasData ? "Left" : ""}
-            />
-          </div>
-          <div className="flex justify-between w-full px-6 -mt-2">
-            <span className="text-xs font-semibold opacity-60">0</span>
-            <span className="text-xs font-semibold opacity-60">{profile.dailyCalorieGoal}</span>
+        {/* Calories — redesigned layout */}
+        <div className="card-lavender rounded-3xl p-4 flex flex-col gap-2">
+          {/* Top Formula */}
+          <p className="text-[10px] font-bold text-[#121212] opacity-60 text-center w-full uppercase tracking-wider">
+            Remaining = Goal - Food + Exercise
+          </p>
+
+          <div className="flex flex-row items-center gap-2">
+            {/* Left: Ring */}
+            <div className="flex-shrink-0">
+              <CalorieRing
+                consumed={hasData ? totals.calories : 0}
+                goal={profile.dailyCalorieGoal}
+                burned={hasData ? caloriesBurned : 0}
+                size={190}
+                color="#121212"
+                bgColor="#121212"
+                showLabel
+                label="Left"
+              />
+            </div>
+
+            {/* Right: Details Container */}
+            <div className="flex-1 flex flex-row items-center justify-end gap-6">
+              {/* Column 1: Base Goal */}
+              <div className="flex flex-col items-center">
+                <p className="text-xs font-bold text-[#121212] opacity-80 mb-1">Base Goal</p>
+                <p className="text-xl font-extrabold text-[#121212] leading-none">{profile.dailyCalorieGoal}</p>
+              </div>
+
+              <div className="w-[1px] h-12 bg-black/10" />
+
+              {/* Column 2: Food & Exercise */}
+              <div className="flex flex-col items-end gap-3">
+                <div className="text-right">
+                  <p className="text-[10px] font-bold text-[#121212] opacity-80 uppercase tracking-wide">Food</p>
+                  <p className="text-base font-extrabold text-[#121212] leading-none">{hasData ? totals.calories : 0}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] font-bold text-[#121212] opacity-80 uppercase tracking-wide">Exercise</p>
+                  <p className="text-base font-extrabold text-[#121212] leading-none">{hasData ? caloriesBurned : 0}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -303,27 +347,27 @@ const Dashboard = () => {
             label="Carbs"
             current={hasData ? totals.carbs : 0}
             goal={profile.carbsGoal}
-            cardClass="card-green"
-            arcColor="#121212"
-            arcBg="#45C588"
+            cardClass="bg-white text-[#121212]"
+            arcColor="#45C588"
+            arcBg="#121212"
             noData={!hasData}
           />
           <MacroCard
             label="Protein"
             current={hasData ? totals.protein : 0}
             goal={profile.proteinGoal}
-            cardClass="card-orange"
-            arcColor="#121212"
-            arcBg="#FF6F43"
+            cardClass="bg-white text-[#121212]"
+            arcColor="#FF6F43"
+            arcBg="#121212"
             noData={!hasData}
           />
           <MacroCard
             label="Fats"
             current={hasData ? totals.fat : 0}
             goal={profile.fatGoal}
-            cardClass="card-yellow"
-            arcColor="#121212"
-            arcBg="#F5F378"
+            cardClass="bg-white text-[#121212]"
+            arcColor="#F5F378"
+            arcBg="#121212"
             noData={!hasData}
           />
           <WaterCard
@@ -343,6 +387,50 @@ const Dashboard = () => {
               });
             }}
           />
+
+          {/* Exercise Card (Orange) */}
+          <div className="bg-white text-[#121212] rounded-3xl p-4 flex flex-col justify-between" style={{ minHeight: 170 }}>
+            <div>
+              <p className="text-sm font-bold mb-1">Exercise</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-black">{totalDuration}</span>
+                <span className="text-xs font-bold opacity-60">mins</span>
+              </div>
+            </div>
+
+            <div className="mt-auto">
+              <p className="text-xs font-bold opacity-60 mb-0.5">Burned</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-black">{caloriesBurned}</span>
+                <span className="text-xs font-bold opacity-60">kcal</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Steps Card (Orange) */}
+          <div className="bg-white text-[#121212] rounded-3xl p-4 flex flex-col justify-between" style={{ minHeight: 170 }}>
+            <div>
+              <p className="text-sm font-bold mb-1">Steps</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-black">{selectedSteps.toLocaleString()}</span>
+              </div>
+              <p className="text-xs font-bold opacity-60 mb-2">/ {profile.dailyStepsGoal.toLocaleString()}</p>
+
+              {/* Progress Bar */}
+              <div className="w-full h-2 bg-[#121212]/5 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#121212] rounded-full"
+                  style={{ width: `${Math.min((selectedSteps / profile.dailyStepsGoal) * 100, 100)}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="mt-auto">
+              <p className="text-[10px] font-bold opacity-60 uppercase tracking-wide">
+                {selectedSteps >= profile.dailyStepsGoal ? "Goal Hit!" : "Keep going"}
+              </p>
+            </div>
+          </div>
         </div>
 
 

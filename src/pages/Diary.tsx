@@ -43,47 +43,49 @@ const Diary = () => {
 
     return (
         <div className="flex flex-col min-h-screen pb-24 max-w-md mx-auto" style={{ background: "#121212", color: "#fff" }}>
-            {/* ── Header ── */}
-            <div className="px-5 pt-12 pb-4 flex items-center justify-between">
-                <h1 className="text-2xl font-extrabold">Food Diary</h1>
-                <ClipboardList className="w-6 h-6 text-accent-orange" />
-            </div>
+            <div className="sticky top-0 z-50 bg-[#121212] pt-12 pb-1">
+                {/* ── Header ── */}
+                <div className="px-5 pb-4 flex items-center justify-between">
+                    <h1 className="text-2xl font-extrabold">Food Diary</h1>
+                    <ClipboardList className="w-6 h-6 text-accent-orange" />
+                </div>
 
-            {/* ── Week Calendar ── */}
-            <div className="px-5 mb-4">
-                <div className="rounded-3xl p-3" style={{ background: "#ffffff" }}>
-                    <div className="grid grid-cols-7 gap-1 text-center">
-                        {weekDates.map((d) => {
-                            const dateStr = formatDate(d);
-                            const isToday = dateStr === today;
-                            const isSel = dateStr === selectedDate;
-                            return (
-                                <button
-                                    key={dateStr}
-                                    onClick={() => setSelectedDate(dateStr)}
-                                    className="flex flex-col items-center gap-1"
-                                >
-                                    <span
-                                        className="text-[11px] font-semibold w-9 py-0.5 rounded-full"
-                                        style={{
-                                            color: isToday ? "#7c3aed" : "#9ca3af",
-                                            background: isToday ? "#ede9fe" : "transparent",
-                                        }}
+                {/* ── Week Calendar ── */}
+                <div className="px-5 mb-4">
+                    <div className="rounded-3xl p-3" style={{ background: "#ffffff" }}>
+                        <div className="grid grid-cols-7 gap-1 text-center">
+                            {weekDates.map((d) => {
+                                const dateStr = formatDate(d);
+                                const isToday = dateStr === today;
+                                const isSel = dateStr === selectedDate;
+                                return (
+                                    <button
+                                        key={dateStr}
+                                        onClick={() => setSelectedDate(dateStr)}
+                                        className="flex flex-col items-center gap-1"
                                     >
-                                        {format(d, "EEE")}
-                                    </span>
-                                    <span
-                                        className="w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all"
-                                        style={{
-                                            background: isToday ? "#121212" : isSel ? "#474747" : "transparent",
-                                            color: (isToday || isSel) ? "#fff" : "#9ca3af",
-                                        }}
-                                    >
-                                        {format(d, "dd")}
-                                    </span>
-                                </button>
-                            );
-                        })}
+                                        <span
+                                            className="text-[11px] font-semibold w-9 py-0.5 rounded-full"
+                                            style={{
+                                                color: isToday ? "#7c3aed" : "#9ca3af",
+                                                background: isToday ? "#ede9fe" : "transparent",
+                                            }}
+                                        >
+                                            {format(d, "EEE")}
+                                        </span>
+                                        <span
+                                            className="w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all"
+                                            style={{
+                                                background: isToday ? "#121212" : isSel ? "#474747" : "transparent",
+                                                color: (isToday || isSel) ? "#fff" : "#9ca3af",
+                                            }}
+                                        >
+                                            {format(d, "dd")}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>

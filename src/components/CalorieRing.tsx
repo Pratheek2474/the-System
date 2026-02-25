@@ -74,19 +74,20 @@ const CalorieRing = ({
   // Unique IDs so multiple rings on one page don't clash
   const uid = useId().replace(/:/g, "");
   const eatClipId = `eat-${uid}`;
-  const burnClipId = `burn-${uid}`;
   const glowGradId = `glow-grad-${uid}`;
   const glowFiltId = `glow-filt-${uid}`;
 
-  // Clamp percentages
-  const eatPct = Math.min(consumed / Math.max(goal, 1), 1);
-  const burnPct = Math.min(burned / Math.max(goal, 1), 1);
+  // Clamp percentages for visual (0 to 1)
+  // Logic: Net Remaining = Goal + Burned - Consumed
+  // Visual Fill = Consumed / (Goal + Burned)
+  const totalBudget = Math.max(goal + burned, 1);
+  const eatPct = Math.min(consumed / totalBudget, 1);
 
   // Sector angles
   const eatEndDeg = 180 + eatPct * 180; // 180° → 360°
-  const burnStartDeg = 360 - burnPct * 180; // 360° → 180°
 
-  const left = Math.max(goal - consumed - burned, 0);
+  // Allow negative remaining
+  const left = goal + burned - consumed;
 
   // For the compact macro-card variant we show a smaller cropped ring
   // with a single-colour (consumed) fill only.
@@ -106,11 +107,6 @@ const CalorieRing = ({
           {/* ── Clip: consumed (left → clockwise) ── */}
           <clipPath id={eatClipId}>
             <path d={sectorCW(180, eatEndDeg)} />
-          </clipPath>
-
-          {/* ── Clip: burned (right ← counter-clockwise) ── */}
-          <clipPath id={burnClipId}>
-            <path d={sectorCW(burnStartDeg, 360)} />
           </clipPath>
 
           {/* ── Radial gradient + blur for inner glow ── */}
@@ -134,24 +130,12 @@ const CalorieRing = ({
           )}
         </defs>
 
-        {/* ── 1. Background track (full 180° ring, translucent) ── */}
+        {/* ── 2. Background track (full 180° ring, translucent) ── */}
         <path d={RING_PATH} fill={bgColor} opacity={0.1} />
-
-        {/* ── 2. Inner glow circle (Figma spec, full ring only) ── */}
-        {!compact && (
-          <g opacity="0.1" filter={`url(#${glowFiltId})`}>
-            <circle cx={CX} cy={CY} r="60.5613" fill={`url(#${glowGradId})`} />
-          </g>
-        )}
 
         {/* ── 3. Consumed arc — dark, fills from LEFT ── */}
         {eatPct > 0.001 && (
           <path d={RING_PATH} fill={color} clipPath={`url(#${eatClipId})`} />
-        )}
-
-        {/* ── 4. Burned arc — white, fills from RIGHT ── */}
-        {burnPct > 0.001 && (
-          <path d={RING_PATH} fill={burnedColor} clipPath={`url(#${burnClipId})`} />
         )}
       </svg>
 
