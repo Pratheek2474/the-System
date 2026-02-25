@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import { format } from "date-fns";
 import { Plus, Minus, Droplets } from "lucide-react";
+import WeekCalendar from "@/components/WeekCalendar";
 import { useApp } from "@/context/AppContext";
 import { foodDatabase } from "@/data/foods";
-import { getToday, getWeekDates, formatDate } from "@/lib/dateUtils";
+import { getToday } from "@/lib/dateUtils";
 import CalorieRing from "@/components/CalorieRing";
 
 // ── Exact Figma ring path (218×218 viewBox) ───────────────────────────────────
@@ -181,7 +181,6 @@ const Dashboard = () => {
   const { meals, water, workouts, profile, setWater, steps } = useApp();
   const [selectedDate, setSelectedDate] = useState<string>(getToday());
   const today = getToday();
-  const weekDates = getWeekDates();
 
   const selectedMeals = useMemo(() => meals.filter((m) => m.date === selectedDate), [meals, selectedDate]);
   const selectedWorkouts = useMemo(() => workouts.filter((w) => w.date === selectedDate), [workouts, selectedDate]);
@@ -246,55 +245,13 @@ const Dashboard = () => {
         </div>
 
         {/* ── Week Selector ── */}
-        <div className="px-5 mb-4">
-          <div className="rounded-3xl p-3" style={{ background: "#ffffff" }}>
-            <div className="grid grid-cols-7 gap-1 text-center">
-              {weekDates.map((d) => {
-                const dateStr = formatDate(d);
-                const isToday = dateStr === today;
-                const isSel = dateStr === selectedDate;
-                return (
-                  <button
-                    key={dateStr}
-                    onClick={() => setSelectedDate(dateStr)}
-                    className="flex flex-col items-center gap-1"
-                  >
-                    {/* day label — purple pill on today */}
-                    <span
-                      className="text-[11px] font-semibold w-9 py-0.5 rounded-full"
-                      style={{
-                        color: isToday ? "#7c3aed" : "#9ca3af",
-                        background: isToday ? "#ede9fe" : "transparent",
-                      }}
-                    >
-                      {format(d, "EEE")}
-                    </span>
-                    {/* date number — black fill for today, white ring for other selected */}
-                    <span
-                      className="w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all"
-                      style={{
-                        background: isToday && isSel ? "#121212"
-                          : isToday ? "#121212"
-                            : isSel ? "#474747"
-                              : "transparent",
-                        color: (isToday || isSel) ? "#fff" : "#9ca3af",
-                      }}
-                    >
-                      {format(d, "dd")}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+        <WeekCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       </div>
 
       {/* ── Content ── */}
       <div className="h-[170px]" />
       <div className="px-5 space-y-4">
         <h2 className="text-2xl font-bold">Dashboard</h2>
-
         {/* Calories — redesigned layout */}
         <div className="card-lavender rounded-3xl p-4 flex flex-col gap-2">
           {/* Top Formula */}

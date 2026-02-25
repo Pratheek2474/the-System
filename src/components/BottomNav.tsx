@@ -6,6 +6,7 @@ import { getToday, generateId } from "@/lib/dateUtils";
 import { exerciseDatabase } from "@/data/exercises";
 import QuickLogSheet from "@/components/QuickLogSheet";
 import FoodSearch from "@/components/FoodSearch";
+import LogWeightSheet from "@/components/LogWeightSheet";
 
 const LEFT_TABS = [
   { icon: Home, label: "Home", path: "/" },
@@ -22,6 +23,7 @@ const BottomNav = () => {
   const { setWater, setWorkouts, setSteps, profile } = useApp();
   const [open, setOpen] = useState(false);
   const [showFoodSearch, setShowFoodSearch] = useState(false);
+  const [showLogWeight, setShowLogWeight] = useState(false);
 
   const today = getToday();
 
@@ -134,12 +136,18 @@ const BottomNav = () => {
           onLogFood={handleLogFood}
           onLogExercise={handleLogExercise}
           onLogSteps={handleLogSteps}
+          onLogWeight={() => { setOpen(false); setShowLogWeight(true); }}
         />
       )}
 
       {/* Food Search */}
       {showFoodSearch && (
         <FoodSearch onClose={() => setShowFoodSearch(false)} />
+      )}
+
+      {/* Log Weight */}
+      {showLogWeight && (
+        <LogWeightSheet onClose={() => setShowLogWeight(false)} />
       )}
     </>
   );

@@ -30,6 +30,8 @@ export interface WorkoutEntry {
   caloriesBurned: number;
   duration: number; // minutes
   date: string;
+  sets?: number;
+  reps?: number;
 }
 
 export interface StepsEntry {

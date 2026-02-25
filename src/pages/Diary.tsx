@@ -1,15 +1,16 @@
 import { useMemo, useState } from "react";
-import { format } from "date-fns";
-import { ClipboardList, Trash2, ChevronRight } from "lucide-react";
+import { ClipboardList, Trash2, ChevronRight, ChartBar } from "lucide-react";
+import WeekCalendar from "@/components/WeekCalendar";
+import MacroDetailsSheet from "@/components/MacroDetailsSheet";
 import { useApp } from "@/context/AppContext";
 import { foodDatabase } from "@/data/foods";
-import { getToday, getWeekDates, formatDate } from "@/lib/dateUtils";
+import { getToday } from "@/lib/dateUtils";
 
 const Diary = () => {
     const { meals, setMeals } = useApp();
     const [selectedDate, setSelectedDate] = useState<string>(getToday());
+    const [showMacroDetails, setShowMacroDetails] = useState(false);
     const today = getToday();
-    const weekDates = getWeekDates();
 
     const selectedMeals = useMemo(() => meals.filter((m) => m.date === selectedDate), [meals, selectedDate]);
 
@@ -24,7 +25,7 @@ const Diary = () => {
     const MEAL_ORDER = ["breakfast", "lunch", "snack", "dinner"] as const;
 
     const totals = useMemo(() => {
-        let cal = 0, pro = 0, carb = 0, fat = 0;
+        let cal = 0, pro = 0, carb = 0, fat = 0, fiber = 0;
         selectedMeals.forEach((m) => {
             const food = foodDatabase.find((f) => f.id === m.foodId) || offCache[m.foodId];
             if (food) {
@@ -32,9 +33,10 @@ const Diary = () => {
                 pro += food.protein * m.servings;
                 carb += food.carbs * m.servings;
                 fat += food.fat * m.servings;
+                fiber += (food.fiber || 0) * m.servings;
             }
         });
-        return { cal: Math.round(cal), pro: Math.round(pro), carb: Math.round(carb), fat: Math.round(fat) };
+        return { cal: Math.round(cal), pro: Math.round(pro), carb: Math.round(carb), fat: Math.round(fat), fiber: Math.round(fiber) };
     }, [selectedMeals, offCache]);
 
     const deleteEntry = (id: string) => {
@@ -42,77 +44,60 @@ const Diary = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen pb-24 max-w-md mx-auto bg-background text-foreground">
-            <div className="fixed top-0 w-full max-w-md z-50 bg-background pt-12 pb-1">
+        <div className="flex flex-col min-h-screen pb-28 max-w-md mx-auto" style={{ background: "#121212", color: "#fff" }}>
+            <div className="fixed top-0 w-full max-w-md z-50 bg-[#121212] pt-6 pb-1">
                 {/* ── Header ── */}
-                <div className="px-5 pb-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-extrabold">Food Diary</h1>
+                <div className="flex items-center justify-between px-5 pb-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-lg" style={{ background: "#cc1111" }}>
+                            P
+                        </div>
+                        <p className="text-base font-semibold">Welcome Back, Player.</p>
+                    </div>
                     <ClipboardList className="w-6 h-6 text-accent-orange" />
                 </div>
 
-                {/* ── Week Calendar ── */}
-                <div className="px-5 mb-4">
-                    <div className="rounded-3xl p-3" style={{ background: "#ffffff" }}>
-                        <div className="grid grid-cols-7 gap-1 text-center">
-                            {weekDates.map((d) => {
-                                const dateStr = formatDate(d);
-                                const isToday = dateStr === today;
-                                const isSel = dateStr === selectedDate;
-                                return (
-                                    <button
-                                        key={dateStr}
-                                        onClick={() => setSelectedDate(dateStr)}
-                                        className="flex flex-col items-center gap-1"
-                                    >
-                                        <span
-                                            className="text-[11px] font-semibold w-9 py-0.5 rounded-full"
-                                            style={{
-                                                color: isToday ? "#7c3aed" : "#9ca3af",
-                                                background: isToday ? "#ede9fe" : "transparent",
-                                            }}
-                                        >
-                                            {format(d, "EEE")}
-                                        </span>
-                                        <span
-                                            className="w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold transition-all"
-                                            style={{
-                                                background: isToday ? "hsl(var(--primary))" : isSel ? "hsl(var(--muted))" : "transparent",
-                                                color: (isToday || isSel) ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
-                                            }}
-                                        >
-                                            {format(d, "dd")}
-                                        </span>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
+                {/* ── Week Selector ── */}
+                <WeekCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
             </div>
 
             {/* Spacer for fixed header */}
-            <div className="h-[190px]" />
+            <div className="h-[170px]" />
 
             <div className="px-5 space-y-4">
-                {/* Daily Summary Card */}
-                <div className="rounded-2xl p-4 flex justify-around items-center" style={{ background: "linear-gradient(135deg, #232220 0%, #1a1a1a 100%)", border: "1px solid #2F2F2F" }}>
-                    <div className="text-center">
-                        <p className="text-xl font-bold text-accent-orange">{totals.cal}</p>
-                        <p className="text-[10px] uppercase tracking-wider opacity-60">Kcal</p>
+                <h2 className="text-2xl font-bold flex justify-between items-center">
+                    Food Diary
+                </h2>
+                {/* Daily Summary Card with Graph Button */}
+                <div className="flex gap-2">
+                    <div className="flex-1 rounded-2xl p-4 flex justify-around items-center" style={{ background: "linear-gradient(135deg, #232220 0%, #1a1a1a 100%)", border: "1px solid #2F2F2F" }}>
+                        <div className="text-center">
+                            <p className="text-xl font-bold text-primary">{totals.cal}</p>
+                            <p className="text-[10px] uppercase tracking-wider opacity-60">Kcal</p>
+                        </div>
+                        <div className="w-[1px] h-8 bg-white/10" />
+                        <div className="text-center">
+                            <p className="text-base font-bold text-[#FF6F43]">{totals.pro}g</p>
+                            <p className="text-[10px] uppercase tracking-wider opacity-60">Prot</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-base font-bold text-[#45C588]">{totals.carb}g</p>
+                            <p className="text-[10px] uppercase tracking-wider opacity-60">Carb</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-base font-bold text-[#F5F378]">{totals.fat}g</p>
+                            <p className="text-[10px] uppercase tracking-wider opacity-60">Fat</p>
+                        </div>
                     </div>
-                    <div className="w-[1px] h-8 bg-white/10" />
-                    <div className="text-center">
-                        <p className="text-base font-bold text-accent-green">{totals.pro}g</p>
-                        <p className="text-[10px] uppercase tracking-wider opacity-60">Prot</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-base font-bold text-accent-yellow">{totals.carb}g</p>
-                        <p className="text-[10px] uppercase tracking-wider opacity-60">Carb</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-base font-bold text-accent-lavender">{totals.fat}g</p>
-                        <p className="text-[10px] uppercase tracking-wider opacity-60">Fat</p>
-                    </div>
+
+                    <button
+                        onClick={() => setShowMacroDetails(true)}
+                        className="w-[64px] flex flex-col items-center justify-center rounded-2xl py-3 hover:bg-white/5 active:scale-[0.97] transition-all"
+                        style={{ background: "#232220", border: "1px solid #2F2F2F" }}
+                    >
+                        <ChartBar />
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Stats</span>
+                    </button>
                 </div>
 
                 {/* Meal Sections */}
@@ -124,7 +109,7 @@ const Diary = () => {
                     }, 0);
 
                     return (
-                        <div key={type} className="rounded-2xl overflow-hidden" style={{ background: "#232220" }}>
+                        <div key={type} className="bg-card rounded-2xl overflow-hidden mb-4">
                             <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: "1px solid #1a1a1a" }}>
                                 <span className="text-sm font-bold capitalize">{type}</span>
                                 <span className="ml-auto text-xs font-semibold" style={{ color: "#9ca3af" }}>{Math.round(mealCals)} kcal</span>
@@ -166,6 +151,14 @@ const Diary = () => {
                     );
                 })}
             </div>
+
+            {/* Macro Details Overlay */}
+            {showMacroDetails && (
+                <MacroDetailsSheet
+                    onClose={() => setShowMacroDetails(false)}
+                    totals={totals}
+                />
+            )}
         </div>
     );
 };
