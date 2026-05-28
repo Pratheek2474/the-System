@@ -1,73 +1,74 @@
-# Welcome to your Lovable project
+# Fitness & Nutrition Tracker
 
-## Project info
+## Project Description
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+This is a MyFitnessPal-like application designed for tracking both food intake and workout activities. It helps users monitor their daily nutrition, log exercises, and stay on top of their fitness goals.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+-   **Food Logging**: Easily log meals and track nutritional information (calories, protein, carbs, fats).
+-   **Nutritional Tracking**: View daily and historical nutritional summaries.
+-   **Workout Logging**: Record various workout activities, including duration and calories burned.
+-   **Progressive Web App (PWA)**: Installable and works offline, providing a native app-like experience.
+-   **User Profiles**: Manage personal fitness goals and preferences.
 
-**Use Lovable**
+## Technology Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+This project is built using the following technologies:
 
-Changes made via Lovable will be committed automatically to this repo.
+-   **Frontend**: React
+-   **Language**: TypeScript
+-   **Styling**: Tailwind CSS
+-   **UI Components**: shadcn-ui
 
-**Use your preferred IDE**
+## Local Development Setup
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Follow these steps to get the project up and running on your local machine.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Prerequisites
 
-Follow these steps:
+Ensure you have the following installed:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+-   Node.js (LTS version recommended)
+-   npm or Yarn
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Installation
 
-# Step 3: Install the necessary dependencies.
-npm i
+1.  **Clone the repository**:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+    ```bash
+    git clone <YOUR_REPOSITORY_URL>
+    cd fitness-nutrition-tracker
+    ```
+
+2.  **Install dependencies**:
+
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+### Running the Application
+
+To start the development server:
+
+```bash
 npm run dev
+# or
+yarn dev
 ```
 
-**Edit a file directly in GitHub**
+The application will typically be available at `http://localhost:5173` (or another port if 5173 is in use).
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Usage
 
-**Use GitHub Codespaces**
+(Placeholder for detailed usage instructions)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Contributing
 
-## What technologies are used for this project?
+(Placeholder for contribution guidelines)
 
-This project is built with:
+## License
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+(Placeholder for licensing information)
